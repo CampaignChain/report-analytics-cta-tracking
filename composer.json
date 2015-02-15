@@ -1,0 +1,33 @@
+{
+    "name": "campaignchain/report-analytics-cta-tracking",
+    "description": "Shows Activities that linked to a Location and CTAs executed on that Location.",
+    "type": "campaignchain-report-analytics",
+    "license": "Apache-2.0",
+    "homepage": "http://www.campaignchain.com",
+    "authors": [
+        {
+            "name": "Sandro Groganz",
+            "email": "sandro@campaignchain.com"
+        }
+    ],
+    "require": {
+    },
+    "autoload": {
+        "psr-4": { "CampaignChain\\Report\\AnalyticsCtaTrackingBundle\\": "" }
+    },
+    "extra": {
+        "campaignchain": {
+            "kernel": {
+                "classes": [
+                    "CampaignChain\\Report\\AnalyticsCtaTrackingBundle\\CampaignChainReportAnalyticsCtaTrackingBundle"
+                ],
+                "routing":
+                {
+                    "name": "campaignchain_report_analytics_cta_tracking",
+                    "resource": "@CampaignChainReportAnalyticsCtaTrackingBundle/Resources/config/routing.yml",
+                    "prefix": "/"
+                }
+            }
+        }
+    }
+}

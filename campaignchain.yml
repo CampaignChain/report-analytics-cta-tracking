@@ -1,0 +1,7 @@
+
+modules:
+    campaignchain-analytics-cta-tracking-per-location:
+        display_name: 'CTAs per Location'
+        description: 'Shows Activities that linked to a Location and CTAs executed on that Location.'
+        routes:
+            index: campaignchain_analytics_cta_tracking_per_location_index
