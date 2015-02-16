@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AnalyticsCtaTrackingPerLocationController extends Controller
 {
-    const GRAPH_TRUNCATE_NAME = 24;
+    const GRAPH_TRUNCATE_NAME = 22;
 
     public function indexAction(Request $request)
     {
@@ -73,10 +73,14 @@ class AnalyticsCtaTrackingPerLocationController extends Controller
     }
 
     public function readAction(Request $request, $campaignId, $locationId){
+        $campaignService = $this->get('campaignchain.core.campaign');
+        $campaign = $campaignService->getCampaign($campaignId);
+
         return $this->render(
             'CampaignChainReportAnalyticsCtaTrackingBundle::index.html.twig',
             array(
                 'page_title' => 'CTAs Per Location',
+                'campaign' => $campaign,
                 'api_data' => $this->generateUrl(
                         'campaignchain_analytics_cta_tracking_per_location_data_api',
                         array(
@@ -88,21 +92,38 @@ class AnalyticsCtaTrackingPerLocationController extends Controller
     }
 
     public function apiDataAction(Request $request, $campaignId, $locationId){
+        $locationService = $this->container->get('campaignchain.core.location');
+        $location = $locationService->getLocation($locationId);
+
+        $chartData = array();
+
+        $chartData['nodes'][] = array(
+            'name' => 'location_'.$location->getId(),
+            'display_name' => $location->getName(),
+            'type' => 'location',
+            'tpl_medium' => $locationService->tplTeaser(
+                    $location,
+                    array(
+                        'truncate_middle' => self::GRAPH_TRUNCATE_NAME,
+                    )
+                ),
+            'direction' => 'outbound',
+        );
+
         $repository = $this->getDoctrine()
             ->getRepository('CampaignChainCoreBundle:ReportCTA');
 
-        // Get outbound nodes and links.
+        // Get outbound nodes and links excluding the CTA's Location.
         $qb = $repository->createQueryBuilder('r');
         $qb->select('r')
             ->where('r.campaign = :campaignId')
             ->andWhere('r.sourceLocation = :locationId')
+            ->andWhere('r.targetLocation != :locationId')
             ->groupBy('r.targetLocation')
             ->setParameter('campaignId', $campaignId)
             ->setParameter('locationId', $locationId);
         $query = $qb->getQuery();
         $CTAs = $query->getResult();
-
-        $locationService = $this->container->get('campaignchain.core.location');
 
         // TODO: Change the below once an outbound link can point to another CTA (e.g. form).
         foreach($CTAs as $CTA){
@@ -180,7 +201,6 @@ class AnalyticsCtaTrackingPerLocationController extends Controller
                 'type' => 'campaignchain-activity',
                 'tpl_medium' => $activityService->tplTeaser($CTA->getActivity(),
                         array(
-                            'name' => 'activity',
                             'show_trigger' => true,
                             'truncate_middle' => self::GRAPH_TRUNCATE_NAME,
                         )
