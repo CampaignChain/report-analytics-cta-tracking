@@ -1,6 +1,7 @@
 {
     "name": "campaignchain/report-analytics-cta-tracking",
     "description": "Shows Activities that linked to a Location and CTAs executed on that Location.",
+    "keywords": ["report","campaignchain"],
     "type": "campaignchain-report-analytics",
     "license": "Apache-2.0",
     "homepage": "http://www.campaignchain.com",
