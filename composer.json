@@ -1,16 +1,21 @@
 {
     "name": "campaignchain/report-analytics-cta-tracking",
-    "description": "Shows Activities that linked to a Location and CTAs executed on that Location.",
+    "description": "Shows a graph of inbound and outbound calls-to-action related to an online location.",
     "keywords": ["report","campaignchain"],
     "type": "campaignchain-report-analytics",
     "license": "Apache-2.0",
     "homepage": "http://www.campaignchain.com",
     "authors": [
         {
-            "name": "Sandro Groganz",
-            "email": "sandro@campaignchain.com"
+            "name": "CampaignChain Inc.",
+            "email": "info@campaignchain.com",
+            "homepage": "http://www.campaignchain.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/CampaignChain/campaignchain-ce/issues",
+        "docs": "http://doc.campaignchain.com"
+    },
     "require": {
     },
     "autoload": {
