@@ -62,8 +62,8 @@ class AnalyticsCtaTrackingPerLocationController extends Controller
         $tplVars = array(
             'page_title' => 'CTAs Per Location',
             'form' => $form->createView(),
-            'dependent_select_parent' => 'campaign',
-            'dependent_select_child' => 'location',
+            'dependent_select_parent' => 'form_campaign',
+            'dependent_select_child' => 'form_location',
             'dependent_select_route' => 'campaignchain_core_report_list_cta_locations_per_campaign_api',
         );
 
