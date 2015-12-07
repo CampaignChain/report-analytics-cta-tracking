@@ -60,7 +60,7 @@ class AnalyticsCtaTrackingPerLocationController extends Controller
         }
 
         $tplVars = array(
-            'page_title' => 'CTAs Per Location',
+            'page_title' => 'Customer Journey Per Location',
             'form' => $form->createView(),
             'dependent_select_parent' => 'form_campaign',
             'dependent_select_child' => 'form_location',
@@ -79,7 +79,7 @@ class AnalyticsCtaTrackingPerLocationController extends Controller
         return $this->render(
             'CampaignChainReportAnalyticsCtaTrackingBundle::index.html.twig',
             array(
-                'page_title' => 'CTAs Per Location',
+                'page_title' => 'Customer Journey Per Location',
                 'campaign' => $campaign,
                 'api_data' => $this->generateUrl(
                         'campaignchain_analytics_cta_tracking_per_location_data_api',
