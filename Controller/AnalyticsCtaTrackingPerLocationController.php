@@ -5,9 +5,6 @@ namespace CampaignChain\Report\AnalyticsCtaTrackingBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\HttpFoundation\Response;
 
 class AnalyticsCtaTrackingPerLocationController extends Controller
@@ -218,10 +215,7 @@ class AnalyticsCtaTrackingPerLocationController extends Controller
             }
         }
 
-        $encoders = array(new JsonEncoder());
-        $normalizers = array(new GetSetMethodNormalizer());
-
-        $serializer = new Serializer($normalizers, $encoders);
+        $serializer = $this->get('campaignchain.core.serializer.default');
 
         return new Response($serializer->serialize($chartData, 'json'));
     }
