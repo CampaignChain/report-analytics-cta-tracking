@@ -26,9 +26,11 @@ class AnalyticsCtaTrackingPerLocationController extends Controller
                             ->from('CampaignChain\CoreBundle\Entity\CTA', 'cta')
                             ->from('CampaignChain\CoreBundle\Entity\Operation', 'o')
                             ->from('CampaignChain\CoreBundle\Entity\Activity', 'a')
+                            ->from('CampaignChain\CoreBundle\Entity\ReportCTA', 'r')
                             ->where('cta.operation = o.id')
                             ->andWhere('o.activity = a.id')
                             ->andWhere('a.campaign = cpgn.id')
+                            ->andWhere('r.campaign = cpgn.id')
                             ->orderBy('campaign.startDate', 'ASC');
                     },
                 'property' => 'name',
