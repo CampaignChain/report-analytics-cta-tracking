@@ -26,9 +26,11 @@ class AnalyticsCtaTrackingPerLocationController extends Controller
                             ->from('CampaignChain\CoreBundle\Entity\CTA', 'cta')
                             ->from('CampaignChain\CoreBundle\Entity\Operation', 'o')
                             ->from('CampaignChain\CoreBundle\Entity\Activity', 'a')
+                            ->from('CampaignChain\CoreBundle\Entity\ReportCTA', 'r')
                             ->where('cta.operation = o.id')
                             ->andWhere('o.activity = a.id')
                             ->andWhere('a.campaign = cpgn.id')
+                            ->andWhere('r.campaign = cpgn.id')
                             ->orderBy('campaign.startDate', 'ASC');
                     },
                 'property' => 'name',
@@ -178,8 +180,8 @@ class AnalyticsCtaTrackingPerLocationController extends Controller
         $qb = $repository->createQueryBuilder('r');
         $qb->select('r')
             ->where('r.campaign = :campaignId')
-            ->andWhere('r.targetLocation = :locationId')
-            ->andWhere('r.referrerLocation = r.sourceLocation')
+            ->andWhere('r.sourceLocation = :locationId')
+            ->andWhere('r.sourceLocation = r.targetLocation')
             ->groupBy('r.CTA')
             ->setParameter('campaignId', $campaignId)
             ->setParameter('locationId', $locationId);
@@ -205,14 +207,11 @@ class AnalyticsCtaTrackingPerLocationController extends Controller
                 'direction' => 'inbound',
             );
 
-            // Skip if source equals target.
-            if($locationId != $CTA->getSourceLocation()->getId()){
-                $chartData['links'][] = array(
-                    'source' => 'activity_'.$CTA->getActivity()->getId(),
-                    'target' => 'location_'.$locationId,
-                    'value' => $inboundClicks,
-                );
-            }
+            $chartData['links'][] = array(
+                'source' => 'activity_'.$CTA->getActivity()->getId(),
+                'target' => 'location_'.$locationId,
+                'value' => $inboundClicks,
+            );
         }
 
         $serializer = $this->get('campaignchain.core.serializer.default');
