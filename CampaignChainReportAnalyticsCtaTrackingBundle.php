@@ -17,8 +17,13 @@
 
 namespace CampaignChain\Report\AnalyticsCtaTrackingBundle;
 
+use CampaignChain\Report\AnalyticsCtaTrackingBundle\DependencyInjection\CampaignChainReportAnalyticsCtaTrackingExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class CampaignChainReportAnalyticsCtaTrackingBundle extends Bundle
 {
+    public function getContainerExtension()
+    {
+        return new CampaignChainReportAnalyticsCtaTrackingExtension();
+    }
 }
