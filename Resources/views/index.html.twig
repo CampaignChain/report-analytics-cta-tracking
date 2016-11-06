@@ -81,125 +81,131 @@ limitations under the License.
 
 
 {% block body %}
-    <p>{{ campaign|campaignchain_tpl_teaser }}</p>
-    <div id="chart"></div>
+    {% embed 'AvanzuAdminThemeBundle:Widgets:box-widget.html.twig' %}
+        {% block box_title %}
+            <p>{{ campaign|campaignchain_tpl_teaser }}</p>
+        {% endblock %}
+        {% block box_body %}<div id="chart" style="width: 100%;"></div>{% endblock %}
+        {% block box_after %}
+        <script>
+            var margin = {top: 1, right: 1, bottom: 6, left: 1},
+                width = parseInt(d3.select('#chart').style('width'), 10),
+                width = width - margin.left - margin.right,
+                height = 600 - margin.top - margin.bottom;
 
-    <script>
-        var margin = {top: 1, right: 1, bottom: 6, left: 1},
-            width = 1140 - margin.left - margin.right,
-            height = 600 - margin.top - margin.bottom;
-
-        var formatNumber = d3.format(",.0f"),
-                format = function(d) {
-                    var format = formatNumber(d) + " click";
-                    if(formatNumber(d) > 1){
-                        format = format + "s";
-                    }
-                    return format;
-                },
-                color = d3.scale.category20();
-
-        var svg = d3.select("#chart").append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        var sankey = d3.sankey()
-                .nodeWidth(240)
-                .nodePadding(10)
-                .size([width, height]);
-
-        var path = sankey.link();
-
-        d3.json("{{ api_data }}", function(energy) {
-
-            var nodeMap = {};
-            energy.nodes.forEach(function(x) { nodeMap[x.name] = x; });
-            energy.links = energy.links.map(function(x) {
-                return {
-                    source: nodeMap[x.source],
-                    target: nodeMap[x.target],
-                    value: x.value
-                };
-            });
-
-            sankey
-                    .nodes(energy.nodes)
-                    .links(energy.links)
-                    .layout(32);
-
-            var link = svg.append("g").selectAll(".link")
-                    .data(energy.links)
-                    .enter().append("path")
-                    .attr("class", "link")
-                    .attr("d", path)
-                    .style("stroke-width", function(d) { return Math.max(1, d.dy); })
-                    .sort(function(a, b) { return b.dy - a.dy; });
-
-            link.append("title")
-                    .text(function(d) { return d.source.display_name + " → " + d.target.display_name + "\n" + format(d.value); });
-
-            var node = svg.append("g").selectAll(".node")
-                    .data(energy.nodes)
-                    .enter().append("g")
-                    .attr("class", "node")
-                    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-                    .call(d3.behavior.drag()
-                            .origin(function(d) { return d; })
-                            .on("dragstart", function() { this.parentNode.appendChild(this); })
-                            .on("drag", dragmove));
-
-            node.append("rect")
-                    .attr("height", function(d) { return d.dy; })
-                    .attr("width", sankey.nodeWidth())
-                    .attr("class", function(d) { return d.type; })
-                    .append("title")
-                    .text(function(d) { return d.display_name + "\n" + format(d.value); });
-
-            node.append("foreignObject")
-                    .attr("width", sankey.nodeWidth()-10)
-                    .attr("height", function(d) { return d.dy-10; })
-                    .attr("x", 5)
-                    .attr("y", function(d) {
-                        if(d.dy > 32){
-                            return 5;
+            var formatNumber = d3.format(",.0f"),
+                    format = function(d) {
+                        var format = formatNumber(d) + " click";
+                        if(formatNumber(d) > 1){
+                            format = format + "s";
                         }
+                        return format;
+                    },
+                    color = d3.scale.category20();
 
-                        return 1;
-                    })
-                    .append("xhtml:body")
-                    .attr("class", "campaignchain-svg-foreign-object")
-                    .html(function(d) {
-                        if(d.tpl_medium && d.dy > 32){
-                            content = d.tpl_medium;
-                        } else if(d.dy > 18) {
-                            content =
-                                '<div class="campaignchain-teaser">'
-                                + '<span class="text text-s">'
-                                + d.display_name + '</span>'
-                                '</div>';
+            var svg = d3.select("#chart").append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+            var sankey = d3.sankey()
+                    .nodeWidth(240)
+                    .nodePadding(10)
+                    .size([width, height]);
+
+            var path = sankey.link();
+
+            d3.json("{{ api_data }}", function(energy) {
+
+                var nodeMap = {};
+                energy.nodes.forEach(function(x) { nodeMap[x.name] = x; });
+                energy.links = energy.links.map(function(x) {
+                    return {
+                        source: nodeMap[x.source],
+                        target: nodeMap[x.target],
+                        value: x.value
+                    };
+                });
+
+                sankey
+                        .nodes(energy.nodes)
+                        .links(energy.links)
+                        .layout(32);
+
+                var link = svg.append("g").selectAll(".link")
+                        .data(energy.links)
+                        .enter().append("path")
+                        .attr("class", "link")
+                        .attr("d", path)
+                        .style("stroke-width", function(d) { return Math.max(1, d.dy); })
+                        .sort(function(a, b) { return b.dy - a.dy; });
+
+                link.append("title")
+                        .text(function(d) { return d.source.display_name + " → " + d.target.display_name + "\n" + format(d.value); });
+
+                var node = svg.append("g").selectAll(".node")
+                        .data(energy.nodes)
+                        .enter().append("g")
+                        .attr("class", "node")
+                        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+                        .call(d3.behavior.drag()
+                                .origin(function(d) { return d; })
+                                .on("dragstart", function() { this.parentNode.appendChild(this); })
+                                .on("drag", dragmove));
+
+                node.append("rect")
+                        .attr("height", function(d) { return d.dy; })
+                        .attr("width", sankey.nodeWidth())
+                        .attr("class", function(d) { return d.type; })
+                        .append("title")
+                        .text(function(d) { return d.display_name + "\n" + format(d.value); });
+
+                node.append("foreignObject")
+                        .attr("width", sankey.nodeWidth()-10)
+                        .attr("height", function(d) { return d.dy-10; })
+                        .attr("x", 5)
+                        .attr("y", function(d) {
+                            if(d.dy > 32){
+                                return 5;
+                            }
+
+                            return 1;
+                        })
+                        .append("xhtml:body")
+                        .attr("class", "campaignchain-svg-foreign-object")
+                        .html(function(d) {
+                            if(d.tpl_medium && d.dy > 32){
+                                content = d.tpl_medium;
+                            } else if(d.dy > 18) {
+                                content =
+                                    '<div class="campaignchain-teaser">'
+                                    + '<span class="text text-s">'
+                                    + d.display_name + '</span>'
+                                    '</div>';
+
+                                return content;
+                            }
+
+                            content = content + '<div class="data">';
+                            if(d.direction == 'outbound'){
+                                content = content + '<i class="fa fa-long-arrow-right"></i> ';
+                            }
+                            content = content + format(d.value);
+                            if(d.direction == 'inbound'){
+                                content = content +' <i class="fa fa-long-arrow-right"></i>';
+                            }
+                            content = content + '</div>';
                             return content;
-                        }
+                        });
 
-                        content = content + '<div class="data">';
-                        if(d.direction == 'outbound'){
-                            content = content + '<i class="fa fa-long-arrow-right"></i> ';
-                        }
-                        content = content + format(d.value);
-                        if(d.direction == 'inbound'){
-                            content = content +' <i class="fa fa-long-arrow-right"></i>';
-                        }
-                        content = content + '</div>';
-                        return content;
-                    });
-
-            function dragmove(d) {
-                d3.select(this).attr("transform", "translate(" + d.x + "," + (d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))) + ")");
-                sankey.relayout();
-                link.attr("d", path);
-            }
-        });
-    </script>
+                function dragmove(d) {
+                    d3.select(this).attr("transform", "translate(" + d.x + "," + (d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))) + ")");
+                    sankey.relayout();
+                    link.attr("d", path);
+                }
+            });
+        </script>
+        {% endblock %}
+    {% endembed %}
 {% endblock %}
