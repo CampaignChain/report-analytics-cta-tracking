@@ -13,13 +13,13 @@
 # limitations under the License.
 
 campaignchain_analytics_cta_tracking_per_location_index:
-    pattern:  /report/analytics/ctatracking/perlocation/
+    path:  /report/analytics/ctatracking/perlocation/
     defaults: { _controller: CampaignChainReportAnalyticsCtaTrackingBundle:AnalyticsCtaTrackingPerLocation:index }
 
 campaignchain_analytics_cta_tracking_per_location_read:
-    pattern:  /report/analytics/ctatracking/perlocation/campaign/{campaignId}/location/{locationId}
+    path:  /report/analytics/ctatracking/perlocation/campaign/{campaignId}/location/{locationId}
     defaults: { _controller: CampaignChainReportAnalyticsCtaTrackingBundle:AnalyticsCtaTrackingPerLocation:read }
 
 campaignchain_analytics_cta_tracking_per_location_data_api:
-    pattern:  /api/private/report/analytics/ctatracking/campaign/{campaignId}/location/{locationId}
+    path:  /api/private/report/analytics/ctatracking/campaign/{campaignId}/location/{locationId}
     defaults: { _controller: CampaignChainReportAnalyticsCtaTrackingBundle:AnalyticsCtaTrackingPerLocation:apiData }
