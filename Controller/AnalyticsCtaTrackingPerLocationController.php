@@ -33,8 +33,8 @@ class AnalyticsCtaTrackingPerLocationController extends Controller
                             ->andWhere('r.campaign = cpgn.id')
                             ->orderBy('campaign.startDate', 'ASC');
                     },
-                'property' => 'name',
-                'empty_value' => 'Select a Campaign',
+                'choice_label' => 'name',
+                'placeholder' => 'Select a Campaign',
                 'empty_data' => null,
             ))
             ->add('location', 'text', array(
